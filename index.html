@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>오후의 직장인 유형 테스트</title>
+<title>오후가 되면 나는 어떤 선생님?</title>
 <style>
 :root{
   --bg:#f7f5ef; --card:#fff; --ink:#252525; --muted:#77736c;
@@ -97,10 +97,10 @@ h1{font-size:clamp(32px,7vw,52px);line-height:1.12;margin:12px 0}
 <div class="wrap"><main class="app">
   <section id="start" class="card hero fade">
     <div class="desk-icons">☕ 💻 💬 📄 🕒</div>
-    <div class="eyebrow">AFTERNOON OFFICE TYPE TEST</div>
-    <h1>오후의 직장인<br>유형 테스트</h1>
+    <div class="eyebrow">AFTERNOON TEACHER MODE</div>
+    <h1>오후가 되면<br>나는 어떤 선생님?</h1>
     <div class="subtitle">점심시간이 끝난 뒤, 진짜 나의 모습이 나타난다.</div>
-    <p class="desc">커피부터 찾는 사람, 갑자기 업무에 불붙는 사람,<br>조용히 퇴근 시간만 기다리는 사람까지…<br><b>나는 오후가 되면 어떤 직장인이 될까?</b></p>
+    <p class="desc">커피부터 찾는 사람, 갑자기 업무에 불붙는 사람,<br>조용히 퇴근 시간만 기다리는 사람까지…<br><b>오후의 나는 어떤 선생님일까?</b></p>
     <p class="notice">※ 본 테스트는 과학적 근거가 전혀 없는,<br>오직 재미를 위한 테스트입니다 😂</p>
     <button class="primary" id="startBtn">내 유형 알아보기 →</button>
   </section>
@@ -118,7 +118,7 @@ h1{font-size:clamp(32px,7vw,52px);line-height:1.12;margin:12px 0}
   <section id="result" class="card hidden">
     <div class="result-head">
       <div id="rEmoji" class="result-emoji"></div>
-      <div class="result-label">당신의 오후 직장인 유형은</div>
+      <div class="result-label">오늘 오후의 당신은</div>
       <h2 id="rName" class="result-name"></h2>
       <p id="rDesc" class="result-copy"></p>
     </div>
@@ -134,11 +134,11 @@ h1{font-size:clamp(32px,7vw,52px);line-height:1.12;margin:12px 0}
     </div>
     <p class="find">오늘 연수장에서 나의 찰떡 오후 동료를 찾아보세요 👀</p>
     <div class="actions">
-      <button class="secondary" id="allTypesBtn">👀 다른 유형 보기</button>
+      <button class="secondary" id="allTypesBtn">👀 다른 유형도 구경하기</button>
       <button class="secondary" id="restartBtn">↻ 다시 테스트하기</button>
     </div>
     <div id="typesPanel" class="types-panel hidden">
-      <h3>16가지 오후 직장인 유형</h3>
+      <h3>다른 유형도 구경하기 👀</h3>
       <p class="hint">궁금한 유형을 눌러 결과와 찰떡 동료를 구경해보세요.</p>
       <div id="typeList" class="type-list"></div>
     </div>
@@ -147,6 +147,25 @@ h1{font-size:clamp(32px,7vw,52px);line-height:1.12;margin:12px 0}
 </main></div>
 
 <script>
+/* Apps Script 웹 앱의 /exec 주소를 아래에 입력하세요. */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyg7HCwIveOdLunGdczTRsj0DzWntl_pYRSVuWgCnAQY2YowfpZakvvFjtxjnU8yq03/exec";
+
+function saveResult(resultCode) {
+  if (!SCRIPT_URL || SCRIPT_URL.includes("여기에_Apps_Script")) {
+    console.warn("Apps Script 웹 앱 주소를 SCRIPT_URL에 입력해주세요.");
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {"Content-Type": "text/plain;charset=utf-8"},
+    body: JSON.stringify({
+      code: resultCode
+    })
+  }).catch(error => console.error("결과 저장 실패:", error));
+}
+
 // 네 축: E/I = 사람으로 충전/혼자 충전, D/F = 바로 처리/흐름대로,
 // H/L = 고출력/저전력, N/T = 오늘 마무리/내일도 괜찮아
 const questions = [
@@ -218,10 +237,13 @@ function code(){
 }
 function finish(){
  show("loading");
+ const resultCode=code();
+ saveResult(resultCode);
  const texts=["교무실 생존 패턴을 확인하고 있습니다 ☕","6교시 배터리 잔량을 계산 중입니다 🔋","퇴근 본능을 정밀 분석 중입니다 👀"];
  let t=0; const timer=setInterval(()=>{$("loadingText").textContent=texts[++t%texts.length]},650);
- setTimeout(()=>{clearInterval(timer);display(results[code()])},1900);
+ setTimeout(()=>{clearInterval(timer);display(results[resultCode])},1900);
 }
+
 function display(r, fromBrowse=false){
  $("rEmoji").textContent=r.e;$("rName").textContent=r.n;$("rDesc").textContent=r.d;
  $("rSymptoms").innerHTML=r.s.map(v=>`<li>${v}</li>`).join("");
@@ -249,13 +271,13 @@ function buildTypeList(){
 $("allTypesBtn").onclick=()=>{
  const panel=$("typesPanel");
  panel.classList.toggle("hidden");
- $("allTypesBtn").textContent=panel.classList.contains("hidden")?"👀 다른 유형 보기":"▲ 유형 목록 닫기";
+ $("allTypesBtn").textContent=panel.classList.contains("hidden")?"👀 다른 유형도 구경하기":"▲ 유형 목록 닫기";
  if(!panel.classList.contains("hidden")) panel.scrollIntoView({behavior:"smooth",block:"nearest"});
 };
 $("startBtn").onclick=start;
 $("restartBtn").onclick=()=>{
  $("typesPanel").classList.add("hidden");
- $("allTypesBtn").textContent="👀 다른 유형 보기";
+ $("allTypesBtn").textContent="👀 다른 유형도 구경하기";
  show("start");window.scrollTo({top:0,behavior:"smooth"});
 };
 buildTypeList();

@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>오후의 직장인 유형 테스트</title>
+<style>
+:root{
+  --bg:#f7f5ef; --card:#fff; --ink:#252525; --muted:#77736c;
+  --line:#e8e3d8; --accent:#5d6d5a; --accent2:#eef2ea;
+  --shadow:0 18px 55px rgba(40,38,31,.10);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; color:var(--ink);
+  font-family:Pretendard,"Noto Sans KR",system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%,#fff6d8 0 8%,transparent 28%),
+    radial-gradient(circle at 90% 85%,#e7efe3 0 10%,transparent 30%),
+    var(--bg);
+}
+button{font:inherit}
+.wrap{min-height:100vh;display:grid;place-items:center;padding:28px 16px}
+.app{width:min(720px,100%)}
+.card{
+  background:rgba(255,255,255,.94); border:1px solid rgba(232,227,216,.9);
+  border-radius:28px; padding:38px; box-shadow:var(--shadow);
+}
+.hidden{display:none!important}
+.hero{text-align:center}
+.desk-icons{font-size:38px;letter-spacing:10px;margin:3px 0 24px}
+.eyebrow{font-size:13px;font-weight:800;letter-spacing:.14em;color:var(--accent);text-transform:uppercase}
+h1{font-size:clamp(32px,7vw,52px);line-height:1.12;margin:12px 0}
+.subtitle{font-size:18px;font-weight:750;margin-bottom:24px}
+.desc{line-height:1.8;color:#555;max-width:520px;margin:0 auto 20px}
+.notice{font-size:13px;color:var(--muted);line-height:1.55;margin:20px 0 26px}
+.primary,.secondary,.choice{
+  border:0;border-radius:16px;cursor:pointer;transition:.18s ease;
+}
+.primary{background:var(--ink);color:white;padding:16px 28px;font-weight:800;min-width:210px}
+.primary:hover{transform:translateY(-2px);box-shadow:0 9px 20px rgba(0,0,0,.15)}
+.secondary{background:#f2efe8;color:var(--ink);padding:14px 20px;font-weight:750}
+.progress-row{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.progress-track{height:9px;background:#eeeae1;border-radius:99px;overflow:hidden;flex:1}
+.progress-bar{height:100%;width:0;background:var(--accent);transition:width .35s ease}
+.count{font-size:13px;font-weight:800;color:var(--muted);white-space:nowrap}
+.qtag{font-size:14px;font-weight:800;color:var(--accent);margin-bottom:10px}
+.question{font-size:clamp(23px,5vw,32px);line-height:1.42;margin:0 0 28px}
+.choices{display:grid;gap:13px}
+.choice{
+  text-align:left;padding:18px 20px;background:#faf9f5;border:1px solid var(--line);
+  line-height:1.55;font-weight:650;color:#34322e;
+}
+.choice:hover{background:var(--accent2);border-color:#ccd7c8;transform:translateY(-1px)}
+.fade{animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.loading{text-align:center;padding:55px 20px}
+.spinner{width:58px;height:58px;border:6px solid #ece9e1;border-top-color:var(--accent);border-radius:50%;margin:0 auto 24px;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading h2{margin:0 0 9px}.loading p{color:var(--muted)}
+.result-head{text-align:center;border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:26px}
+.result-emoji{font-size:72px;line-height:1}
+.result-label{font-size:14px;font-weight:800;color:var(--muted);margin-top:14px}
+.result-name{font-size:clamp(31px,7vw,46px);margin:6px 0 12px}
+.result-copy{line-height:1.75;color:#555;max-width:550px;margin:auto}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+.box{background:#faf9f5;border:1px solid var(--line);border-radius:18px;padding:19px}
+.box h3{font-size:14px;margin:0 0 10px;color:var(--muted)}
+.box p,.box ul{margin:0;line-height:1.65}
+.box ul{padding-left:19px}
+.quote{font-weight:800;font-size:18px}
+.match{
+  margin-top:18px;padding:24px;border-radius:22px;background:var(--accent2);
+  border:1px solid #d9e2d5;text-align:center
+}
+.match small{font-weight:800;color:var(--accent)}
+.match-name{font-size:25px;font-weight:900;margin:8px 0}
+.match p{margin:0;line-height:1.65;color:#4f574c}
+.find{font-weight:900;margin:22px 0 0;text-align:center}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:24px}
+.types-panel{margin-top:18px;padding-top:22px;border-top:1px solid var(--line)}
+.types-panel h3{text-align:center;margin:0 0 6px;font-size:20px}
+.types-panel .hint{text-align:center;color:var(--muted);font-size:13px;margin:0 0 16px}
+.type-list{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.type-chip{border:1px solid var(--line);background:#faf9f5;border-radius:14px;padding:13px 12px;text-align:left;cursor:pointer;font:inherit;font-weight:750;transition:.16s}
+.type-chip:hover{background:var(--accent2);border-color:#ccd7c8;transform:translateY(-1px)}
+.type-chip.active{background:var(--accent2);border-color:#aabca5}
+.footer{text-align:center;font-size:12px;color:#8b877f;margin-top:14px}
+@media(max-width:600px){
+ .card{padding:27px 20px;border-radius:22px}.grid{grid-template-columns:1fr}
+ .desk-icons{font-size:30px;letter-spacing:5px}.wrap{padding:14px}
+ .type-list{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap"><main class="app">
+  <section id="start" class="card hero fade">
+    <div class="desk-icons">☕ 💻 💬 📄 🕒</div>
+    <div class="eyebrow">AFTERNOON OFFICE TYPE TEST</div>
+    <h1>오후의 직장인<br>유형 테스트</h1>
+    <div class="subtitle">점심시간이 끝난 뒤, 진짜 나의 모습이 나타난다.</div>
+    <p class="desc">커피부터 찾는 사람, 갑자기 업무에 불붙는 사람,<br>조용히 퇴근 시간만 기다리는 사람까지…<br><b>나는 오후가 되면 어떤 직장인이 될까?</b></p>
+    <p class="notice">※ 본 테스트는 과학적 근거가 전혀 없는,<br>오직 재미를 위한 테스트입니다 😂</p>
+    <button class="primary" id="startBtn">내 유형 알아보기 →</button>
+  </section>
+
+  <section id="quiz" class="card hidden">
+    <div class="progress-row"><div class="progress-track"><div id="bar" class="progress-bar"></div></div><div id="count" class="count"></div></div>
+    <div id="qArea" class="fade"></div>
+  </section>
+
+  <section id="loading" class="card loading hidden">
+    <div class="spinner"></div><h2>오후의 나를 분석 중...</h2>
+    <p id="loadingText">교무실 생존 패턴을 확인하고 있습니다 ☕</p>
+  </section>
+
+  <section id="result" class="card hidden">
+    <div class="result-head">
+      <div id="rEmoji" class="result-emoji"></div>
+      <div class="result-label">당신의 오후 직장인 유형은</div>
+      <h2 id="rName" class="result-name"></h2>
+      <p id="rDesc" class="result-copy"></p>
+    </div>
+    <div class="grid">
+      <div class="box"><h3>🔎 주요 증상</h3><ul id="rSymptoms"></ul></div>
+      <div class="box"><h3>🎒 오후 생존 필수 아이템</h3><p id="rItem"></p></div>
+      <div class="box" style="grid-column:1/-1"><h3>💬 오늘의 한마디</h3><p id="rQuote" class="quote"></p></div>
+    </div>
+    <div class="match">
+      <small>💘 나의 찰떡 오후 동료</small>
+      <div id="mName" class="match-name"></div>
+      <p id="mReason"></p>
+    </div>
+    <p class="find">오늘 연수장에서 나의 찰떡 오후 동료를 찾아보세요 👀</p>
+    <div class="actions">
+      <button class="secondary" id="allTypesBtn">👀 다른 유형 보기</button>
+      <button class="secondary" id="restartBtn">↻ 다시 테스트하기</button>
+    </div>
+    <div id="typesPanel" class="types-panel hidden">
+      <h3>16가지 오후 직장인 유형</h3>
+      <p class="hint">궁금한 유형을 눌러 결과와 찰떡 동료를 구경해보세요.</p>
+      <div id="typeList" class="type-list"></div>
+    </div>
+  </section>
+  <div class="footer">고등학교 교사 연수 아이스브레이킹 · 재미로만 즐겨주세요 :)</div>
+</main></div>
+
+<script>
+// 네 축: E/I = 사람으로 충전/혼자 충전, D/F = 바로 처리/흐름대로,
+// H/L = 고출력/저전력, N/T = 오늘 마무리/내일도 괜찮아
+const questions = [
+ {q:"점심을 먹고 교무실에 돌아왔다. 가장 먼저 하는 행동은?", axis:"H",
+  a:["☕ 커피부터 챙긴다. 오후는 카페인이 출근시키는 거다.","🪑 일단 자리에 앉는다. 지금 움직이면 체력이 아깝다."]},
+ {q:"오후 2시, 슬슬 졸음이 몰려온다. 나는?", axis:"E",
+  a:["💬 옆자리 선생님에게 말을 건다. 수다로 정신을 깨운다.","🤫 조용히 물 한 잔 마시고 혼자 버틴다."]},
+ {q:"갑자기 한 시간 공강이 생겼다!", axis:"D",
+  a:["🔥 오! 밀린 업무 처리 찬스. 바로 할 일을 연다.","🌿 이건 하늘이 준 휴식이다. 잠깐 숨부터 돌린다."]},
+ {q:"오후에 ‘오늘까지 제출 부탁드립니다’ 메신저가 왔다.", axis:"N",
+  a:["🚨 일단 바로 연다. 안 보면 더 신경 쓰인다.","📅 급한 건지부터 본다. 내일 해도 되면 내일의 나에게."]},
+ {q:"6교시 수업 직전의 나는?", axis:"H",
+  a:["🏃 ‘자, 가보자고!’ 텐션을 한 번 끌어올린다.","🫠 배터리 3%. 교실까지 최소 에너지로 이동한다."]},
+ {q:"복도에서 친한 선생님을 마주쳤다.", axis:"E",
+  a:["🤝 ‘쌤 오늘 어때요?’ 잠깐이라도 이야기하고 간다.","👋 눈빛과 미소로 모든 인사를 끝낸다. 지금은 에너지 절약."]},
+ {q:"퇴근 30분 전, 일이 하나 더 생겼다.", axis:"D",
+  a:["📋 이것만 끝내고 가자. 일단 손부터 댄다.","🧘 잠깐. 오늘 꼭 해야 하는 일인지 먼저 판단한다."]},
+ {q:"퇴근 직전 내 책상은?", axis:"N",
+  a:["🧹 정리하고 내일 할 일까지 확인해야 마음이 편하다.","💻 노트북을 덮는 순간 오늘 업무 종료. 내일의 내가 해결한다."]},
+ {q:"오후에 예상치 못한 업무 요청이 들어왔다.", axis:"D",
+  a:["⚡ 일단 처리 방향부터 잡는다. 시작하면 마음이 편하다.","🌊 하던 일부터 마친다. 갑자기 내 흐름 깨는 건 곤란하다."]},
+ {q:"오후 간식이 생겼다. 나는?", axis:"E",
+  a:["🍪 주변 선생님들과 나눠 먹어야 더 맛있다.","🍫 조용히 내 자리에서 당 충전. 지금 이 순간 소중하다."]},
+ {q:"마지막 수업이 끝났다! 현재 나의 에너지는?", axis:"H",
+  a:["🔥 어? 아직 조금 남았다. 이제 업무 좀 해볼까?","🧟 수업은 끝났고… 저도 거의 끝났습니다."]},
+ {q:"퇴근 시간이 다가오는데 할 일이 조금 남았다.", axis:"N",
+  a:["🦸 오늘의 일은 오늘 끝낸다. 조금만 더!","🏠 내일의 나도 월급을 받는다. 퇴근은 퇴근이다."]}
+];
+
+// 첫 글자=E/I, 둘째=D/F, 셋째=H/L, 넷째=N/T
+const results = {
+ EDHN:{e:"🔥",n:"오후 각성형",d:"점심을 먹고 나면 오히려 시동이 걸립니다. 사람과 이야기하고 일을 처리하다 보면 오후에 업무력이 최고조에 도달하는 타입!",s:["오후부터 갑자기 타자가 빨라짐","공강을 발견하면 할 일부터 떠오름"],i:"☕ 아이스 아메리카노",q:"지금부터 하면 다 할 수 있을 것 같은데?",m:"🐢 저전력 모드형",mr:"당신이 너무 달릴 때 옆에서 속도를 낮춰주는 동료. 둘이 있으면 과열도 방전도 막을 수 있습니다."},
+ EDHT:{e:"🏃",n:"종례 스퍼트형",d:"마지막 수업까지 텐션으로 밀어붙이는 오후의 스퍼터입니다. 사람들과 부딪치며 에너지를 만들지만 퇴근선은 또렷합니다.",s:["6교시에도 목소리 볼륨이 살아 있음","종례 후 퇴근 모드 전환이 빠름"],i:"🥤 시원한 음료",q:"얘들아 마지막이다, 가보자!",m:"🫠 6교시 방전형",mr:"당신의 남은 텐션을 조금만 나눠줘도 상대의 배터리가 살아납니다. 오후의 인간 보조배터리 조합!"},
+ EDLN:{e:"💬",n:"교무실 수다충전형",d:"오후의 체력은 부족해도 동료와 한마디 나누면 다시 살아납니다. 업무도 사람도 놓치지 않으려는 교무실 소통형입니다.",s:["복도에서 만나면 대화가 시작됨","힘들수록 누군가와 말하고 싶음"],i:"☕ 커피 한 잔과 옆자리 동료",q:"선생님, 오늘 왜 이렇게 길어요?",m:"🤝 동료 의존 충전형",mr:"한 명이 말을 꺼내면 한 명이 제대로 받아줍니다. ‘오늘 힘들죠?’ 한마디로 서로 충전 완료."},
+ EDLT:{e:"🤝",n:"동료 의존 충전형",d:"오후가 힘들수록 혼자 버티기보다 동료에게 슬쩍 기대는 편입니다. 짧은 공감 한마디가 커피보다 효과적일 때가 있습니다.",s:["‘쌤 오늘 어때요?’를 자주 말함","동료와 웃고 나면 조금 살아남"],i:"🍬 나눠 먹을 간식",q:"우리만 힘든 거 아니죠…?",m:"💬 교무실 수다충전형",mr:"말할 사람과 들어줄 사람이 만났습니다. 단, 대화가 길어져 퇴근 시간이 늦어질 수 있으니 주의!"},
+ EFHN:{e:"🦸",n:"끝까지 생존형",d:"업무도 사람도 돌발 상황도 어떻게든 받아냅니다. 오후가 쉽진 않지만 결국 오늘 할 몫을 해내고 살아남는 타입입니다.",s:["갑작스러운 부탁에도 결국 처리함","마지막까지 생각보다 멀쩡함"],i:"🧃 수분과 작은 간식",q:"그래도… 오늘 것도 끝은 나겠지.",m:"🏠 정시퇴근 사수형",mr:"끝없이 버티는 당신에게 ‘이제 가도 됩니다’를 알려주는 소중한 퇴근 브레이크입니다."},
+ EFHT:{e:"☕",n:"카페인 수혈형",d:"사람과 이야기할 힘도, 일을 이어갈 힘도 결국 카페인에서 시작됩니다. 오후의 당신에게 커피는 음료가 아니라 시스템입니다.",s:["점심 후 자연스럽게 커피를 찾음","컵이 비면 집중력도 같이 비는 느낌"],i:"☕ 당연히 커피",q:"커피만 있으면 아직 할 수 있어.",m:"🍪 간식 보급형",mr:"커피 담당과 당 담당의 만남. 오후 교무실 생존에 필요한 양대 영양소가 완성됩니다."},
+ EFLN:{e:"🍪",n:"간식 보급형",d:"오후의 평화는 작은 간식에서 시작된다고 믿습니다. 내 것도 챙기지만 옆자리 선생님에게 하나 건네며 분위기까지 살리는 타입!",s:["서랍에 비상식량이 있음","간식이 생기면 주변을 한 번 둘러봄"],i:"🍫 초콜릿·젤리·과자",q:"선생님, 이거 하나 드실래요?",m:"🫠 6교시 방전형",mr:"당신이 서랍을 여는 정확한 순간 상대의 배터리가 3%입니다. 생존 확률을 크게 올려주는 조합."},
+ EFLT:{e:"🏠",n:"정시퇴근 사수형",d:"사람도 좋고 분위기도 좋지만 퇴근 시간은 더 소중합니다. 오후의 목표는 모두와 평화롭게 지내며 제시간에 학교를 나서는 것!",s:["퇴근 시간이 가까워지면 집중력이 상승","‘내일 해도 되는 일’을 잘 구분함"],i:"⌚ 정확한 시계",q:"이건… 내일 해도 되죠?",m:"🧹 퇴근 준비형",mr:"말하지 않아도 퇴근 30분 전부터 눈빛이 통합니다. ‘갈까요?’ 한마디면 동시에 자리에서 일어나는 조합."},
+ IDHN:{e:"📋",n:"끝장 업무형",d:"말없이 앉아 있는데 업무는 하나씩 사라지고 있습니다. 오늘 할 일을 끝내야 마음이 편해서 오후에도 묵묵히 밀어붙이는 타입입니다.",s:["공강이면 조용히 업무창부터 엶","퇴근 전 체크리스트를 다시 확인함"],i:"📝 할 일 목록",q:"이것만 하고 가야지.",m:"🧘 평정심 유지형",mr:"‘그건 내일 해도 돼요’라고 말해줄 수 있는 사람. 당신의 끝없는 ‘이것만’을 멈춰주는 동료입니다."},
+ IDHT:{e:"🚨",n:"메신저 경계형",d:"조용히 일하고 싶지만 오후의 ‘띵동’은 그냥 지나칠 수 없습니다. 알림 하나에도 해야 할 일을 빠르게 파악하는 교무실 레이더입니다.",s:["메신저 알림이 뜨면 시선이 자동 이동","‘오늘까지’라는 말에 심박수 상승"],i:"🔕 가끔은 알림 끄기",q:"잠깐… 또 뭐가 왔지?",m:"🧘 평정심 유지형",mr:"당신이 놀랄 때마다 ‘그냥 공지예요’라고 알려줍니다. 오후 심박수를 정상화해주는 안정제 같은 동료."},
+ IDLN:{e:"🧹",n:"퇴근 준비형",d:"오후에는 에너지를 아끼지만 마무리만큼은 깔끔합니다. 책상과 파일을 정리하고 내일의 나에게 친절한 상태로 퇴근하는 타입입니다.",s:["퇴근 전 책상 정리가 루틴","내일 할 일을 적어두면 마음이 편함"],i:"🗒️ 메모지",q:"내일 할 것만 적어놓고 가자.",m:"🏠 정시퇴근 사수형",mr:"한 명은 정리하고 한 명은 시간을 봅니다. 준비가 끝나는 순간 미련 없이 함께 퇴근할 수 있습니다."},
+ IDLT:{e:"🧘",n:"평정심 유지형",d:"오후에 무슨 일이 생겨도 일단 하나씩 봅니다. 급한 일과 아닌 일을 구분하며 에너지를 지키는 교무실의 평정심 담당입니다.",s:["돌발 업무에도 일단 우선순위를 봄","주변이 바빠도 내 페이스를 유지함"],i:"💧 물 한 잔",q:"하나씩 하면 됩니다.",m:"🚨 메신저 경계형",mr:"당신이 놓칠 수 있는 급한 알림은 상대가 먼저 발견합니다. 레이더와 평정심의 의외로 든든한 조합."},
+ IFHN:{e:"🧟",n:"영혼 이탈형",d:"할 일은 하고 있지만 오후가 깊어질수록 영혼이 조금씩 먼저 퇴근합니다. 그래도 이상하게 중요한 건 결국 해내는 생존형 방전 상태!",s:["모니터를 보며 잠시 멈추는 시간이 생김","머릿속으로 퇴근 후를 상상함"],i:"☕ 강한 카페인",q:"저 지금… 학교에 있는 거 맞죠?",m:"🔥 오후 각성형",mr:"당신의 영혼이 주차장으로 향할 때 현실로 데려오는 사람입니다. 한 명의 추진력이 둘을 살립니다."},
+ IFHT:{e:"🐢",n:"저전력 모드형",d:"오후에는 불필요한 움직임을 최소화합니다. 꼭 해야 할 일은 하지만 체력을 전략적으로 배분하며 퇴근까지 살아남습니다.",s:["의자에서 할 수 있는 일은 의자에서 해결","동선이 짧을수록 행복함"],i:"🪑 편한 의자와 물",q:"굳이 지금 움직여야 하나요?",m:"☕ 카페인 수혈형",mr:"당신의 절전 모드가 너무 깊어질 때 카페인 동료가 재부팅을 도와줍니다."},
+ IFLN:{e:"🫠",n:"6교시 방전형",d:"오전에는 분명 멀쩡했습니다. 그런데 6교시쯤 되면 배터리가 3%가 됩니다. 그래도 내일을 위해 최소한의 정리는 놓치지 않습니다.",s:["‘오늘 왜 이렇게 길지?’를 한 번 이상 말함","교무실 의자에 앉으면 다시 일어나기 싫음"],i:"🍫 초콜릿 또는 커피",q:"나 오늘 수업 몇 개 했지…?",m:"🍪 간식 보급형",mr:"내가 방전되는 정확한 순간 서랍에서 초콜릿을 꺼내는 사람입니다. 이 사람 옆자리면 오후 생존 확률 +80%."},
+ IFLT:{e:"📅",n:"내일의 나 위임형",d:"오후의 에너지는 유한하다는 사실을 누구보다 잘 압니다. 오늘 꼭 하지 않아도 되는 일은 과감히 내일의 나에게 넘기는 현실적인 생존가입니다.",s:["업무를 보고 ‘오늘 꼭?’부터 생각함","퇴근 후까지 일을 끌고 가지 않으려 함"],i:"📆 내일의 일정표",q:"내일의 나도 꽤 괜찮은 사람입니다.",m:"📋 끝장 업무형",mr:"당신이 넘긴 일을 무조건 대신 해준다는 뜻은 아닙니다. 다만 서로를 보면 ‘오늘 할 것’과 ‘내일 할 것’의 균형이 생깁니다."}
+};
+
+let idx=0, scores={E:0,D:0,H:0,N:0};
+const $=id=>document.getElementById(id);
+function show(id){["start","quiz","loading","result"].forEach(x=>$(x).classList.toggle("hidden",x!==id))}
+function start(){idx=0;scores={E:0,D:0,H:0,N:0};show("quiz");render()}
+function render(){
+ const x=questions[idx], pct=(idx/questions.length)*100;
+ $("bar").style.width=pct+"%"; $("count").textContent=`${idx+1} / ${questions.length}`;
+ $("qArea").className="fade";
+ $("qArea").innerHTML=`<div class="qtag">Q${idx+1}</div><h2 class="question">${x.q}</h2>
+ <div class="choices"><button class="choice" data-v="1">A. ${x.a[0]}</button><button class="choice" data-v="-1">B. ${x.a[1]}</button></div>`;
+ document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>answer(x.axis,Number(b.dataset.v)));
+}
+function answer(axis,val){
+ scores[axis]+=val; idx++;
+ if(idx<questions.length) render(); else finish();
+}
+function code(){
+ // 동점 방지: 각 축 3문항이므로 0이 나오지 않음
+ return (scores.E>0?"E":"I")+(scores.D>0?"D":"F")+(scores.H>0?"H":"L")+(scores.N>0?"N":"T");
+}
+function finish(){
+ show("loading");
+ const texts=["교무실 생존 패턴을 확인하고 있습니다 ☕","6교시 배터리 잔량을 계산 중입니다 🔋","퇴근 본능을 정밀 분석 중입니다 👀"];
+ let t=0; const timer=setInterval(()=>{$("loadingText").textContent=texts[++t%texts.length]},650);
+ setTimeout(()=>{clearInterval(timer);display(results[code()])},1900);
+}
+function display(r, fromBrowse=false){
+ $("rEmoji").textContent=r.e;$("rName").textContent=r.n;$("rDesc").textContent=r.d;
+ $("rSymptoms").innerHTML=r.s.map(v=>`<li>${v}</li>`).join("");
+ $("rItem").textContent=r.i;$("rQuote").textContent=`“${r.q}”`;
+ $("mName").textContent=r.m;$("mReason").textContent=r.mr;show("result");
+ document.querySelectorAll(".type-chip").forEach(b=>b.classList.toggle("active", b.dataset.name===r.n));
+ if(fromBrowse){
+   $("result").scrollIntoView({behavior:"smooth",block:"start"});
+ }else{
+   window.scrollTo({top:0,behavior:"smooth"});
+ }
+}
+function buildTypeList(){
+ const list=$("typeList");
+ list.innerHTML="";
+ Object.values(results).forEach(r=>{
+   const b=document.createElement("button");
+   b.className="type-chip";
+   b.dataset.name=r.n;
+   b.innerHTML=`${r.e} ${r.n}`;
+   b.onclick=()=>display(r,true);
+   list.appendChild(b);
+ });
+}
+$("allTypesBtn").onclick=()=>{
+ const panel=$("typesPanel");
+ panel.classList.toggle("hidden");
+ $("allTypesBtn").textContent=panel.classList.contains("hidden")?"👀 다른 유형 보기":"▲ 유형 목록 닫기";
+ if(!panel.classList.contains("hidden")) panel.scrollIntoView({behavior:"smooth",block:"nearest"});
+};
+$("startBtn").onclick=start;
+$("restartBtn").onclick=()=>{
+ $("typesPanel").classList.add("hidden");
+ $("allTypesBtn").textContent="👀 다른 유형 보기";
+ show("start");window.scrollTo({top:0,behavior:"smooth"});
+};
+buildTypeList();
+</script>
+</body>
+</html>
